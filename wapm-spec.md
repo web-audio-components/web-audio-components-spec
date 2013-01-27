@@ -1,80 +1,105 @@
-# WAPM Module Spec
 
-## Constructor Exports
+# Web Audio Component Spec
 
-The definition **must** be a single function that may be instantiated, whose instance supports all of the property requirements below. Ultimately, the single export object should be the constructor. For module `TestModule`:
+This document details the properties that an audio component must uphold in order
+to be compliant with the Web Audio Component service.
 
+## Component(1)
+
+First and foremost, Web Audio Components are built with [Component(1)](https://github.com/component/component). If you haven't already done so, it is recommended that you
+familiarize yourself with the Component(1) spec and workflow. 
+
+## Constructor
+
+A Web Audio Component must export only a single constructor whose instances support all of the property requirements below. Constructors exposed via `module.exports` must have the following signature
+
+```javascript
+ExampleModule(context, options)
 ```
-var testModuleNode = new TestModule( context );
-testModuleNode.connect( otherNode );
-```
 
-The module **should** export via CommonJS, AMD, and bind to global object. View UMDjs (need link) for examples, or the [simple-reverb](https://github.com/wapm/simple-reverb) module for an example. Currently, the WAPM site uses requireJS/AMD to pull down the scripts for demos.
+- **context** A Web Audio Component constructor must take an [AudioContext](http://www.w3.org/TR/webaudio/#AudioContext-section) as the first argument. 
+- **options** The constructor may take an *optional* second argument, which must be an object containing any necessary configuration information.
 
-**!!!** Is there a down side to having all of these export options?
+### Example
 
-## Constructor Arguments
-
-The module constructor **must** take in the audio context as the first argument.
-
-The module constructor **may** take additional arguments as instantiation config, and **should** just be an options object as second argument if implemented.
-
-```
-var testModuleNode = new TestModule( context, {
-  gain : 5
-});
+```javascript
+var context = new webkitAudioContext()
+  , ExampleModule = require("nick-thompson/examplemodule")
+  , example = new ExampleModule(context, {
+      gain: 0.5,
+      frequency: 440
+    });
 ```
 
 ## Instance Properties
 
-Each node **must** have properties of the following:
+Every module instance must have the following properties,
 
-*  `context` - The audio context that all Web Audio nodes are based off of, also must be passed in as the first argument of the constructor
-* `input` - Must be a Web Audio node, and can be of any type (source node, processing node, gain node, etc.). This is what other nodes connect to.
-* `output` - Must be a Web Audio node, and can be of any type (source node, processing node, gain node, etc.). This is what connects to other nodes.
+- `.input` Must be an [AudioNode](http://www.w3.org/TR/webaudio/#AudioNode-section). This node will accept incoming connections from other AudioNodes.
+- `.output` Must be an [AudioNode](http://www.w3.org/TR/webaudio/#AudioNode-section). This node will make all outgoing connections.
+- `.meta` Must be an object containing all necessary metadata related to your module. It is expected that the `.meta` object contains a property `name`, which represents the display name of your module, and a property `params`, which represents each of the public, configurable properties on your module and the minimum, maximum, and default value that property should take. Finally, a `type` property is included which can be one of `float`, `int`, or `boolean` to help the graphic user interface apply the correct values.
 
-Note, `input` and `output` may be the same node.
+### Demonstration of required metadata.
 
-## Audio Parameters
-
-If the node has configurable audio parameters beyond instantiation, they **must** be stored as a key-value pairing object under the `params` property.
-
-```
-function customGainNode ( context ) {
-  this.input = this.output = context.createGain();
-  this.params = {
-    gain : this.input.gain
+```javascript
+ExampleModule.prototype.meta = {
+  name: "Example Module",
+  params: {
+    gain: {
+      min: 0,
+      max: 1,
+      defaultValue: 0.5,
+      type: "float"
+    }
   }
-}
+};
 ```
 
-Each value in the `params` object must be either an `AudioParam`, or an object with the same interface, that is, it **must** have a `name`, `defaultValue`, `minValue`, `maxValue`, and `value`. Look at the [simple-reverb](https://github.com/wapm/simple-reverb) repo to see an example of custom audio parameters with getters and setters.
+**Note,** `input` and `output` may be the same node.
 
 ## Instance Methods
 
-A `connect` and `disconnect` method **must** be added to the prototype. These methods should use the `output` node\'s native `connect` and `disconnect` methods, although the `connect` method needs to connect to either a native Web Audio node or one that follows these specs.
+Every module instance must contain `connect` and `disconnect` methods. These methods should delegate to the `.output` node\'s native `connect` and `disconnect` methods, but should be aware that the `connect` method may need to connect to either a native AudioNode or another Web Audio Component.
 
-```
-TestModule.prototype.connect = function ( node ) {
+### Example
+
+```javascript
+ExampleModule.prototype.connect = function ( node ) {
   this.output.connect( node && node.input ? node.input : node );
 };
 
-TestModule.prototype.disconnect = function () {
+ExampleModule.prototype.disconnect = function () {
   this.output.disconnect();
 };
 ```
 
-## Manifest Specifications
+## Component.json
 
-The manifest **must** be a valid JSON file, similar to a `component.json` or `package.json`, saved as a `wapm.json`. Look at the [wapm.json](https://github.com/wapm/simple-reverb/blob/master/wapm.json) in the simple-reverb repository for an example. The following fields are **required**:
+The Web Audio Component manifest is mostly the same as the [Component(1) manifest](https://github.com/component/component/wiki/Spec). The primary difference is that, to distinguish a Web Audio Component from every other component, the additional field `web-audio` should be applied to the component.json file. The `web-audio` property must be an object containing a single key-value pair `type`, with one of `effect`, `tool`, or `generator`.
 
-* `name` - the name of the module. Must be between 1-30 characters, alphanumeric and dashes, must start with a letter. Must be unique.
-* `repo` - the repo on GitHub, in owner/repository format. For example, 'wapm/simple-reverb' refers to the repository at [https://github.com/wapm/simple-reverb](https://github.com/wapm/simple-reverb)
-* `description` - a brief description of the module, used in searching
-* `keywords` - an array of keywords, used in searching.
-* `script` - the name of the js file that is the module, relative to the repository root.
+### Example
 
-The following attributes are **recommended**:
-
-* `author` - a string of the author's name (TODO need to support name, url)
-* `license` - a string of what license the module is released under
+```json
+{
+  "name": "overdrive",
+  "repo": "web-audio-components/overdrive",
+  "description": "An overdrive distortion effect for the Web Audio API.",
+  "version": "0.0.4",
+  "author": "Nick Thompson <ncthom91@gmail.com>",
+  "keywords": [
+    "web-audio",
+    "effect",
+    "distortion",
+    "overdrive"
+  ],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "scripts": [
+    "index.js"
+  ],
+  "web-audio": {
+    "type": "effect"
+  }
+}
+```
