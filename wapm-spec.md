@@ -39,7 +39,11 @@ Every module instance **MUST** have the following properties,
 
 - `input` **MUST** be an [AudioNode](http://www.w3.org/TR/webaudio/#AudioNode-section). This node will accept incoming connections from other AudioNodes.
 - `output` **MUST** be an [AudioNode](http://www.w3.org/TR/webaudio/#AudioNode-section). This node will make all outgoing connections.
-- `meta` **MUST** be an object containing all necessary metadata related to your module. It is expected that the `.meta` object contains a property `name`, which represents the display name of your module, and a property `params`, which represents each of the public, configurable properties on your module and the minimum, maximum, and default value that property should take. Finally, a `type` property is included which can be one of `float`, `int`, or `bool` to help the graphic user interface apply the correct values.
+- `meta` **MUST** be an object containing all necessary metadata related to your module. The `meta` object **SHOULD** contain a
+`name` parameter, which represents the display name of your component. The `meta` object **MUST** additionally contain a `params` property. The `params` property **MUST** be an object listing each of the public, configurable properties on the module instance, and
+the minimum, maximum, and default values those properties should be assigned. Additionally, the `params` object **SHOULD** contain a
+`type` property which is one of `float`, `int`, or `bool` to help the generic Web Audio Components GUI apply the correct values to
+the module.
 
 ### Demonstration of required metadata
 
