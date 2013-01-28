@@ -75,7 +75,11 @@ ExampleModule.prototype.disconnect = function () {
 
 ## Component.json
 
-The Web Audio Component manifest is mostly the same as the [Component(1) manifest](https://github.com/component/component/wiki/Spec). The primary difference is that, to distinguish a Web Audio Component from every other component, the additional field `web-audio` should be applied to the component.json file. The `web-audio` property must be an object containing a single key-value pair `type`, with one of `effect`, `tool`, or `generator`.
+The Web Audio Component manifest is the same as the [Component(1) manifest](https://github.com/component/component/wiki/Spec),
+with one caveat. Web Audio Components **MUST** include a `web-audio` field in their component.json files. This property is
+how the Web Audio Components service differentiates audio components from various other types of components. The `web-audio`
+property **MUST** be an object, which **SHOULD** contain a `type` property. The `type` property can be any of the follow
+values: `effect`, `tool`, `generator`. The `web-audio` object **COULD** contain additional information in the future.
 
 ### Example
 
@@ -103,3 +107,8 @@ The Web Audio Component manifest is mostly the same as the [Component(1) manifes
   }
 }
 ```
+
+## Contributing
+
+If you have any comments, questions, or suggestions regarding the Web Audio Component spec,
+please open an issue for discussion with the community.
