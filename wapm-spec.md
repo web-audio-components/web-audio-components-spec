@@ -1,7 +1,7 @@
 
 # Web Audio Component Spec
 
-This document details the properties that an audio component must uphold in order
+This document defines the requirements that an audio component must meet in order
 to be compliant with the Web Audio Component service.
 
 ## Component(1)
@@ -11,14 +11,14 @@ familiarize yourself with the Component(1) spec and workflow.
 
 ## Constructor
 
-A Web Audio Component must export only a single constructor whose instances support all of the property requirements below. Constructors exposed via `module.exports` must have the following signature
+A Web Audio Component **MUST** export only a single constructor whose instances support all of the property requirements below. Constructors exposed via `module.exports` **MUST** have the following signature
 
 ```javascript
 ExampleModule(context, options)
 ```
 
-- **context** A Web Audio Component constructor must take an [AudioContext](http://www.w3.org/TR/webaudio/#AudioContext-section) as the first argument. 
-- **options** The constructor may take an *optional* second argument, which must be an object containing any necessary configuration information.
+- **context** A Web Audio Component constructor **MUST** take an [AudioContext](http://www.w3.org/TR/webaudio/#AudioContext-section) as the first argument. 
+- **options** The constructor **MAY** take an *optional* second argument, which **MUST** be an object containing any necessary configuration information. It is expected that properties defined in the **options** object are also public properties on the module instance itself.
 
 ### Example
 
@@ -33,13 +33,13 @@ var context = new webkitAudioContext()
 
 ## Instance Properties
 
-Every module instance must have the following properties,
+Every module instance **MUST** have the following properties,
 
-- `.input` Must be an [AudioNode](http://www.w3.org/TR/webaudio/#AudioNode-section). This node will accept incoming connections from other AudioNodes.
-- `.output` Must be an [AudioNode](http://www.w3.org/TR/webaudio/#AudioNode-section). This node will make all outgoing connections.
-- `.meta` Must be an object containing all necessary metadata related to your module. It is expected that the `.meta` object contains a property `name`, which represents the display name of your module, and a property `params`, which represents each of the public, configurable properties on your module and the minimum, maximum, and default value that property should take. Finally, a `type` property is included which can be one of `float`, `int`, or `boolean` to help the graphic user interface apply the correct values.
+- `.input` **MUST** be an [AudioNode](http://www.w3.org/TR/webaudio/#AudioNode-section). This node will accept incoming connections from other AudioNodes.
+- `.output` **MUST** be an [AudioNode](http://www.w3.org/TR/webaudio/#AudioNode-section). This node will make all outgoing connections.
+- `.meta` **MUST** be an object containing all necessary metadata related to your module. It is expected that the `.meta` object contains a property `name`, which represents the display name of your module, and a property `params`, which represents each of the public, configurable properties on your module and the minimum, maximum, and default value that property should take. Finally, a `type` property is included which can be one of `float`, `int`, or `boolean` to help the graphic user interface apply the correct values.
 
-### Demonstration of required metadata.
+### Demonstration of required metadata
 
 ```javascript
 ExampleModule.prototype.meta = {
@@ -59,7 +59,7 @@ ExampleModule.prototype.meta = {
 
 ## Instance Methods
 
-Every module instance must contain `connect` and `disconnect` methods. These methods should delegate to the `.output` node\'s native `connect` and `disconnect` methods, but should be aware that the `connect` method may need to connect to either a native AudioNode or another Web Audio Component.
+Every module instance **MUST** contain `connect` and `disconnect` methods. These methods **SHOULD** delegate to the `.output` node\'s native `connect` and `disconnect` methods, but should be aware that the `connect` method may need to connect to either a native AudioNode or another Web Audio Component.
 
 ### Example
 
