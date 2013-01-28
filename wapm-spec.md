@@ -7,7 +7,9 @@ to be compliant with the Web Audio Component service.
 ## Component(1)
 
 First and foremost, Web Audio Components are built with [Component(1)](https://github.com/component/component). If you haven't already done so, it is recommended that you
-familiarize yourself with the Component(1) spec and workflow. 
+familiarize yourself with the Component(1) spec and workflow. Please note that audio components will
+only show up on the Web Audio Components API and demonstration site after being successfully registered to
+the [Component(1) registry](https://github.com/component/component/wiki/Components).
 
 ## Constructor
 
