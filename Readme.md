@@ -19,6 +19,7 @@ Adherence to the specification and consuming the registry allows the following:
 * Allowing external libraries to manipulate WACs -- an example of this can be found on [component.fm](http://component.fm) -- WACs that follow spec can be rendered with a [Rack GUI](https://github.com/web-audio-components/rack) since the components follow specification of how the parameters can be manipulated
 * Allow a more succinct way of creating WACs with a library, rather than defining boilerplate for every WAC created.
 * Sharing and reusing code -- rather than rewriting audio components or signal processing algorithms from scratch, just use an existing component found on the [registry](http://component.fm)
+
 ## Background
 
 ### Component(1)
@@ -94,7 +95,8 @@ The spec version the component adheres to **MUST** be listed. This should be in 
     "index.js"
   ],
   "web-audio": {
-    "type": "effect"
+    "type": "effect",
+    "version": "0.1.0"
   }
 }
 ```
@@ -127,7 +129,7 @@ var context = new webkitAudioContext()
 
 Every module instance **MUST** have the following properties:
 
-- `input` **MUST** be an [AudioNode](http://www.w3.org/TR/webaudio/#AudioNode-section). This node will accept incoming connections from other AudioNodes.
+- `input` **MUST** be an [AudioNode](http://www.w3.org/TR/webaudio/#AudioNode-section). This node will accept incoming connections from other AudioNodes for tool and effect components. For source components, this is the generator node.
 - `output` **MUST** be an [AudioNode](http://www.w3.org/TR/webaudio/#AudioNode-section). This node will make all outgoing connections.
 - `meta` **MUST** be an object containing all necessary metadata related to your module. The `meta` object **SHOULD** contain the following properties:
   - `name` if exists, **SHOULD** represent the display name of your component.
@@ -160,7 +162,7 @@ ExampleModule.prototype.meta = {
 
 ## Instance Methods
 
-Every module instance **MUST** contain `connect` and `disconnect` methods. These methods **SHOULD** delegate to the `output` node\'s native `connect` and `disconnect` methods, but should be aware that the `connect` method may need to connect to either a native AudioNode or another Web Audio Component, and may require some internal rerouting upon connect or disconnect.
+Every module instance **MUST** contain `connect` and `disconnect` methods. These methods **SHOULD** delegate to the `output` node's native `connect` and `disconnect` methods, but should be aware that the `connect` method may need to connect to either a native AudioNode or another Web Audio Component, and may require some internal rerouting upon connect or disconnect.
 
 ### Example
 
@@ -177,4 +179,4 @@ ExampleModule.prototype.disconnect = function () {
 ## Contributing
 
 If you have any comments, questions, or suggestions regarding the Web Audio Component spec,
-please open an issue for discussion with the community.
+[please open an issue](https://github.com/web-audio-components/web-audio-components-spec/issues) for discussion with the community.
