@@ -1,5 +1,8 @@
 # Web Audio Component Spec
 
+[discussion group](https://groups.google.com/forum/#!forum/web-audio-components)
+
+
 Current version: *v0.1.0* (currently in flux, not updating)
 [Past versions](https://github.com/web-audio-components/web-audio-components-spec/tags)
 
