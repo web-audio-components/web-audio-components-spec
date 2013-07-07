@@ -5,7 +5,8 @@ Current version: *v0.1.0* (currently in flux, not updating)
 
 This document defines the requirements that a component must meet in order to be compliant and interoperable with other Web Audio Components (WACs). 
 
-This spec is still a work in progress as we discover new uses and features. Please [open an issue](https://github.com/web-audio-components/web-audio-components-spec/issues) for any feedback!
+This spec is still a work in progress as we discover new uses and features. Please check out the [discussion group](https://groups.google.com/forum/#!forum/web-audio-components) to provide feedback!
+
 The keywords **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **RECOMMENDED**, **MAY** and **OPTIONAL** in this document are to be interpreted as described in [RFC2119](http://www.ietf.org/rfc/rfc2119.txt), yeah yeah yeah...
 
 ## Goals
@@ -37,13 +38,22 @@ Effect components are WACs that have an input and an output, and pass a signal f
 
 #### Tool Components
 
+**Currently in development, [follow the discussion](https://groups.google.com/forum/#!topic/web-audio-components/UqIwl-CKM3M)**
 Like effect components, tool components also have an input and an output, and pass a signal from input to output. They differ from effect components as they **SHOULD NOT** alter the signal, but used to analyse the signal in some way. Example tool components are [spectrograph](https://github.com/web-audio-components/spectrograph), which draws a spectrogram of the signal passed through to a canvas element, or a component that calculates the [spectral centroid](http://en.wikipedia.org/wiki/Spectral_centroid) of a signal.
 
 #### Source Components
 
+**Currently in development, [follow the discussion](https://groups.google.com/forum/#!topic/web-audio-components/ZJlEFXz8PCA)**
+
 Unlike both tool and effect components, source components *generate*, and are of some form of `AudioSourceNodes`. They have a source node, and an output.
 
 **Further elaboration of source components is necessary, to bikeshed different use cases and `AudioSourceNodes`, and how they'd be triggered externally**
+
+#### Synth Components
+
+**Currently in development, [follow the discussion](https://groups.google.com/forum/#!topic/web-audio-components/x74QAYoqcrk)**
+
+Synth components are a type of source components that accept a form of note input (either programatically or via MIDI), and provide a voice to the notes that can be chained into other native AudioNodes or WACs. Providing a similar API amongst synth components, so that swapping in and out "voices" for a track is seamless, and can route the output into an AudioContext chain, like using softsynths in a DAW.
 
 ## Manifest
 
@@ -60,6 +70,7 @@ The `web-audio` property **MAY** contain a `type` property. The `type` property 
   * `effect`
   * `tool`
   * `source`
+  * `synth`
 
 The `type` may be undefined, but in which case, tools subscribing to the WAC specification may not be able to handle the audio component correctly. Types are defined in the background section above.
 
